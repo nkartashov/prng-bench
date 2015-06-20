@@ -1,16 +1,12 @@
 module PRNGBench.SimpleBattery
  where
 
-import System.Random (RandomGen, next, split, getStdGen)
+import System.Random (RandomGen)
+
 import Criterion.Main
 import Criterion.Types
 
-nextStreamFromGen :: RandomGen g => g -> [Int]
-nextStreamFromGen gen = map fst $ iterate wrappedNext firstStreamElement
-  where firstStreamElement = next gen
-
-wrappedNext :: RandomGen g => (Int, g) -> (Int, g)
-wrappedNext (_, newGen) = next newGen
+import PRNGBench.RandomUtils
 
 manyRandomsFromNext :: RandomGen g => g -> Int -> [Int]
 manyRandomsFromNext gen n = take n $ nextStreamFromGen gen
@@ -22,3 +18,13 @@ benchFromRandomLength gen n = bench (show n ++ " random numbers") $ nf (manyRand
 
 manyRandomsBenchGroup :: RandomGen g => g -> Benchmark
 manyRandomsBenchGroup gen = bgroup "Generate many random numbers" $ map (benchFromRandomLength gen) randomLengths
+
+splitNumbers = [10, 16, 50, 64, 128, 1000, 2048]
+nextsOnEachSplit = [1, 10, 100, 500, 1000]
+
+manySplitsBenchGroup :: RandomGen g => g -> Benchmark
+manySplitsBenchGroup gen = bgroup "Make many splits and then nexts" $ do
+  splits <- splitNumbers
+  nexts <- nextsOnEachSplit
+  return $ bench (show splits ++ " splits, " ++ show nexts ++ " nexts") $ nf (nextFromSplitGenerators nexts splits) gen
+
