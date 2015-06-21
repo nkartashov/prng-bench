@@ -2,7 +2,6 @@ module PRNGBench
  where
 
 import System.Random (RandomGen)
-import Data.List
 
 import Criterion.Main (Benchmark, defaultMain, bgroup)
 
