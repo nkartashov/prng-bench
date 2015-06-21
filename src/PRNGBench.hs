@@ -11,5 +11,8 @@ import PRNGBench.SimpleBattery
 benchGroups :: RandomGen g => [g -> Benchmark]
 benchGroups = [manyRandomsBenchGroup, manySplitsBenchGroup]
 
+genToBenchGroup :: RandomGen g => String -> g -> Benchmark
+genToBenchGroup name gen = bgroup name $ map (\b -> b gen) benchGroups
+
 runGroups :: RandomGen g => String -> g -> IO ()
-runGroups name gen = defaultMain $ [bgroup name $ map (\b -> b gen) benchGroups]
+runGroups name = defaultMain . (:[]) . genToBenchGroup name
