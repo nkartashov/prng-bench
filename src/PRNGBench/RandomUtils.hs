@@ -34,8 +34,11 @@ nextPowerOfTwo n | isPowerOfTwo n = n
 splitToAnyNumber :: RandomGen g => Int -> g -> [g]
 splitToAnyNumber n = take n . splitToPowerOfTwo (nextPowerOfTwo n)
 
-nextStreamFromSplitGenerators :: RandomGen g => Int -> g -> [[Int]]
+type NextCount = Int
+type SplitCount = Int
+
+nextStreamFromSplitGenerators :: RandomGen g => NextCount -> g -> [[Int]]
 nextStreamFromSplitGenerators = (map nextStreamFromGen .) . splitToAnyNumber
 
-nextFromSplitGenerators :: RandomGen g => Int -> Int -> g -> [[Int]]
+nextFromSplitGenerators :: RandomGen g => NextCount -> SplitCount -> g -> [[Int]]
 nextFromSplitGenerators n splits = map (take n) . nextStreamFromSplitGenerators splits

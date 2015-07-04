@@ -32,7 +32,8 @@ executable prng-bench
 
 library
   exposed-modules: PRNGBench,
-                   PRNGBench.SimpleBattery
+                   PRNGBench.SimpleBattery,
+                   PRNGBench.MC
   other-modules:   PRNGBench.RandomUtils
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8,

@@ -6,9 +6,10 @@ import System.Random (RandomGen)
 import Criterion.Main (Benchmark, defaultMain, bgroup)
 
 import PRNGBench.SimpleBattery
+import PRNGBench.MC
 
 benchGroups :: RandomGen g => [g -> Benchmark]
-benchGroups = [manyRandomsBenchGroup, manySplitsBenchGroup]
+benchGroups = [manyRandomsBenchGroup, manySplitsBenchGroup, runCircleMCBattery]
 
 genToBenchGroup :: RandomGen g => String -> g -> Benchmark
 genToBenchGroup name gen = bgroup name $ map (\b -> b gen) benchGroups

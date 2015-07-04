@@ -4,7 +4,6 @@ module PRNGBench.SimpleBattery
 import System.Random (RandomGen)
 
 import Criterion.Main
-import Criterion.Types()
 
 import PRNGBench.RandomUtils
 
