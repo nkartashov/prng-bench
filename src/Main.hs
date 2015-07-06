@@ -2,25 +2,24 @@ module Main where
 
 import System.Random (RandomGen)
 
-import Criterion.Main
-
 import System.Random.TF.Init
 import System.Random.PCG.Fast.Pure
 
 import SplitMix
 
 import PRNGBench
+import PRNGBench.GenList (AnnotatedGenIO, AnnotatedGenListIO)
 
-annotatedGenToIOBenchmark :: RandomGen g => String -> IO g -> IO Benchmark
-annotatedGenToIOBenchmark n gen = gen >>= \g -> return $ genToBenchGroup n g
+genToAnnotatedGenIO :: RandomGen g => String -> IO g -> AnnotatedGenIO
+genToAnnotatedGenIO n gen = gen >>= return . genToAnnotatedGen n
 
 join :: Monad m => m (m a) -> m a
 join v = v >>= id
 
-benchsIO :: IO [Benchmark]
-benchsIO = sequence [annotatedGenToIOBenchmark "SplitMix" newSplitMix64,
-                     annotatedGenToIOBenchmark "TFRandom" newTFGen,
-                     annotatedGenToIOBenchmark "PCGRandom" $ join $ fmap save create]
+annotatedGensIO :: AnnotatedGenListIO
+annotatedGensIO = sequence [genToAnnotatedGenIO "SplitMix" newSplitMix64,
+                            genToAnnotatedGenIO "TFRandom" newTFGen,
+                            genToAnnotatedGenIO "PCGRandom" $ join $ fmap save create]
 
 main :: IO ()
-main = benchsIO >>= defaultMain
+main = annotatedGensIO >>= runGroups

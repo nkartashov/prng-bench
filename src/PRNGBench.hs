@@ -3,16 +3,18 @@ module PRNGBench
 
 import System.Random (RandomGen)
 
-import Criterion.Main (Benchmark, defaultMain, bgroup)
+import Criterion.Main (Benchmark, defaultMain)
+
+import PRNGBench.GenList (SomeGen(SG), AnnotatedGen, AnnotatedGenList)
 
 import PRNGBench.SimpleBattery
 import PRNGBench.MC
 
-benchGroups :: RandomGen g => [g -> Benchmark]
+benchGroups :: [AnnotatedGenList -> Benchmark]
 benchGroups = [manyRandomsBenchGroup, manySplitsBenchGroup, runCircleMCBattery]
 
-genToBenchGroup :: RandomGen g => String -> g -> Benchmark
-genToBenchGroup name gen = bgroup name $ map (\b -> b gen) benchGroups
+genToAnnotatedGen :: RandomGen g => String -> g -> AnnotatedGen
+genToAnnotatedGen name g = (name, SG g)
 
-runGroups :: RandomGen g => String -> g -> IO ()
-runGroups name = defaultMain . (:[]) . genToBenchGroup name
+runGroups :: AnnotatedGenList -> IO ()
+runGroups gens = defaultMain $ map (\b -> b gens) benchGroups

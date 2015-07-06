@@ -5,6 +5,7 @@ import System.Random (RandomGen, split, randomRs)
 import Criterion.Main
 
 import PRNGBench.RandomUtils (splitToAnyNumber)
+import PRNGBench.GenList (AnnotatedGenList)
 
 radius :: Double
 radius = 1.0
@@ -43,8 +44,10 @@ slices = [10, 100]
 dots :: [Int]
 dots = [1000, 100000]
 
-runCircleMCBattery :: RandomGen g => g -> Benchmark
-runCircleMCBattery gen = bgroup "MC_Circle" $ do
+runCircleMCBattery :: AnnotatedGenList -> Benchmark
+runCircleMCBattery gens = bgroup "MC_Circle" $ do
   sliceInstance <- slices
   dotsInstance <- dots
-  return $ bench (show sliceInstance ++ "_" ++ show dotsInstance) $ nf (runCircleMC sliceInstance dotsInstance) gen
+  (name, gen) <- gens
+  return $ bench (show sliceInstance ++ "_" ++ show dotsInstance ++ "_" ++ name)
+    $ nf (runCircleMC sliceInstance dotsInstance) gen

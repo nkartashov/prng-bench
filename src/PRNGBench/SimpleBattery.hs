@@ -6,6 +6,7 @@ import System.Random (RandomGen)
 import Criterion.Main
 
 import PRNGBench.RandomUtils
+import PRNGBench.GenList (AnnotatedGenList)
 
 manyRandomsFromNext :: RandomGen g => g -> Int -> [Int]
 manyRandomsFromNext gen n = take n $ nextStreamFromGen gen
@@ -13,11 +14,11 @@ manyRandomsFromNext gen n = take n $ nextStreamFromGen gen
 randomLengths :: [Int]
 randomLengths = [1000]
 
-benchFromRandomLength :: RandomGen g => g -> Int -> Benchmark
-benchFromRandomLength gen n = bench (show n) $ nf (manyRandomsFromNext gen) n
-
-manyRandomsBenchGroup :: RandomGen g => g -> Benchmark
-manyRandomsBenchGroup gen = bgroup "Next" $ map (benchFromRandomLength gen) randomLengths
+manyRandomsBenchGroup :: AnnotatedGenList -> Benchmark
+manyRandomsBenchGroup gens = bgroup "Next" $ do
+  len <- randomLengths
+  (name, gen) <- gens
+  return $ bench (show len ++ "_" ++ name) $ nf (manyRandomsFromNext gen) len
 
 splitNumbers :: [Int]
 splitNumbers = [1000, 2048]
@@ -25,9 +26,9 @@ splitNumbers = [1000, 2048]
 nextsOnEachSplit :: [Int]
 nextsOnEachSplit = [1]
 
-manySplitsBenchGroup :: RandomGen g => g -> Benchmark
-manySplitsBenchGroup gen = bgroup "SplitNext" $ do
+manySplitsBenchGroup :: AnnotatedGenList -> Benchmark
+manySplitsBenchGroup gens = bgroup "SplitNext" $ do
   splits <- splitNumbers
   nexts <- nextsOnEachSplit
-  return $ bench (show splits ++ "_" ++ show nexts) $ nf (nextFromSplitGenerators nexts splits) gen
-
+  (name, gen) <- gens
+  return $ bench (show splits ++ "_" ++ show nexts ++ "_" ++ name) $ nf (nextFromSplitGenerators nexts splits) gen
