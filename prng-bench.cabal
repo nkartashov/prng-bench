@@ -32,11 +32,11 @@ executable prng-bench
                        -O2
 
 library
-  exposed-modules: PRNGBench,
-                   PRNGBench.SimpleBattery,
-                   PRNGBench.MC
-  other-modules:   PRNGBench.RandomUtils
-                   PRNGBench.GenList
+  exposed-modules: Test.PRNGBench,
+                   Test.PRNGBench.SimpleBattery,
+                   Test.PRNGBench.MC
+  other-modules:   Test.PRNGBench.RandomUtils
+                   Test.PRNGBench.GenList
   -- other-extensions:    
   build-depends:       base >=4.7 && <4.8,
                        random,

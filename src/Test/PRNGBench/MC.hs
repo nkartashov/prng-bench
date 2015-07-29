@@ -1,11 +1,11 @@
-module PRNGBench.MC where
+module Test.PRNGBench.MC where
 
 import System.Random (RandomGen, split, randomRs)
 
 import Criterion.Main
 
-import PRNGBench.RandomUtils (splitToAnyNumber)
-import PRNGBench.GenList (AnnotatedGenList)
+import Test.PRNGBench.RandomUtils (splitToAnyNumber)
+import Test.PRNGBench.GenList (AnnotatedGenList)
 
 radius :: Double
 radius = 1.0

@@ -1,5 +1,5 @@
 {-# LANGUAGE ExistentialQuantification #-}
-module PRNGBench.GenList where
+module Test.PRNGBench.GenList where
 
 import System.Random (RandomGen, next, split)
 

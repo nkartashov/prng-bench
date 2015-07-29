@@ -1,12 +1,12 @@
-module PRNGBench.SimpleBattery
+module Test.PRNGBench.SimpleBattery
  where
 
 import System.Random (RandomGen)
 
 import Criterion.Main
 
-import PRNGBench.RandomUtils
-import PRNGBench.GenList (AnnotatedGenList)
+import Test.PRNGBench.RandomUtils
+import Test.PRNGBench.GenList (AnnotatedGenList)
 
 manyRandomsFromNext :: RandomGen g => g -> Int -> [Int]
 manyRandomsFromNext gen n = take n $ nextStreamFromGen gen

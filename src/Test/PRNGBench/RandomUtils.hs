@@ -1,4 +1,4 @@
-module PRNGBench.RandomUtils
+module Test.PRNGBench.RandomUtils
   where
 
 import System.Random (RandomGen, next, split)

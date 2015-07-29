@@ -5,10 +5,10 @@ import System.Random (RandomGen)
 import System.Random.TF.Init
 import System.Random.PCG.Fast.Pure
 
-import SplitMix
+import System.Random.SplitMix
 
-import PRNGBench
-import PRNGBench.GenList (AnnotatedGenIO, AnnotatedGenListIO)
+import Test.PRNGBench
+import Test.PRNGBench.GenList (AnnotatedGenIO, AnnotatedGenListIO)
 
 genToAnnotatedGenIO :: RandomGen g => String -> IO g -> AnnotatedGenIO
 genToAnnotatedGenIO n gen = gen >>= return . genToAnnotatedGen n
