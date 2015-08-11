@@ -1,17 +1,24 @@
 {-# LANGUAGE ExistentialQuantification #-}
-module Test.PRNGBench.GenList where
+module Test.PRNGBench.GenList
+  ( SomeGen(..)
+  , AnnotatedGen
+  , AnnotatedGenIO
+  , AnnotatedGenList
+  , AnnotatedGenListIO
+  ) where
+
+import Control.Arrow ((***), second)
 
 import System.Random (RandomGen, next, split)
 
+-- | Wraps any random number generator into a box
 data SomeGen = forall g. RandomGen g => SG g
 
 type AnnotatedGen = (String, SomeGen)
-
 type AnnotatedGenIO = IO (String, SomeGen)
-
 type AnnotatedGenList = [AnnotatedGen]
 type AnnotatedGenListIO = IO [AnnotatedGen]
 
 instance RandomGen SomeGen where
-  next (SG gen) = let (i, newGen) = next gen in (i, SG newGen)
-  split (SG gen) = let (g1, g2) = split gen in (SG g1, SG g2)
+  next (SG gen) = second SG $ next gen
+  split (SG gen) = SG *** SG $ split gen
