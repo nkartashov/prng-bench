@@ -6,7 +6,6 @@ import System.Random (RandomGen)
 
 import System.Random.TF.Init (newTFGen)
 import System.Random.PCG.Fast.Pure (save, create)
-
 import System.Random.SplitMix (newSplitMix64)
 
 import Test.PRNGBench (genToAnnotatedGen, runGroups)

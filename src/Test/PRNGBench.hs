@@ -9,11 +9,15 @@ import Criterion.Main (Benchmark, defaultMain)
 import Test.PRNGBench.GenList (SomeGen(SG), AnnotatedGen, AnnotatedGenList)
 
 import Test.PRNGBench.SimpleBattery (manyRandomsBenchGroup, manySplitsBenchGroup)
-import Test.PRNGBench.MC (runCircleMCBattery)
+import Test.PRNGBench.MC (runSequentialCircleMCBattery, runParallelCircleMCBattery)
 
 -- | A list of default benchmark groups
 benchGroups :: [AnnotatedGenList -> Benchmark]
-benchGroups = [manyRandomsBenchGroup, manySplitsBenchGroup, runCircleMCBattery]
+benchGroups = [ manyRandomsBenchGroup
+              , manySplitsBenchGroup
+              , runSequentialCircleMCBattery
+              , runParallelCircleMCBattery
+              ]
 
 -- | Given a name and a generator, wraps the latter in an annotated box
 genToAnnotatedGen :: RandomGen g => String -> g -> AnnotatedGen

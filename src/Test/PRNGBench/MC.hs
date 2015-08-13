@@ -1,8 +1,10 @@
 module Test.PRNGBench.MC
-  (runCircleMCBattery
-  )where
+  ( runSequentialCircleMCBattery
+  , runParallelCircleMCBattery
+  ) where
 
 import System.Random (RandomGen, split, randomRs)
+import Control.Parallel.Strategies (Strategy, using, r0, rpar)
 
 import Criterion.Main (Benchmark, bench, bgroup, nf)
 
@@ -42,11 +44,13 @@ runSlice gen dotsInTheSlice (left, right) = (\res -> fromIntegral res / fromInte
 totalArea :: Double
 totalArea = (2 * radius) ** 2
 
+type ParallelMCStrategy = Strategy [Double]
+
 -- | Runs MC process on a specified number of slices, throwing a specified number of dots
-runCircleMC :: RandomGen g => Int -> Int -> g -> Double
-runCircleMC sliceNumber dotsPerSlice gen = totalArea / (fromIntegral sliceNumber) * sum resultsOnSlices
+runCircleMC :: RandomGen g => ParallelMCStrategy -> Int -> Int -> g -> Double
+runCircleMC strat sliceNumber dotsPerSlice gen = totalArea / (fromIntegral sliceNumber) * sum resultsOnSlices
   where
-    resultsOnSlices = map workOnSliceIndex $ zip gens [1..sliceNumber]
+    resultsOnSlices = (map workOnSliceIndex $ zip gens [1..sliceNumber]) `using` strat
     workOnSliceIndex (g, sliceIndex) = runSlice g dotsPerSlice $ sliceNumberToLimits $ fromIntegral sliceIndex
     sliceSize = diameter / fromIntegral sliceNumber
     sliceNumberToLimits i = (leftmostLimit + sliceSize * (i - 1), leftmostLimit + sliceSize * i)
@@ -58,11 +62,22 @@ slices = [10, 100]
 dots :: [Int]
 dots = [1000, 100000]
 
--- | Runs MC process with supplied parameters measuring the time needed for that
-runCircleMCBattery :: AnnotatedGenList -> Benchmark
-runCircleMCBattery gens = bgroup "MC_Circle" $ do
+-- | Runs MC process with supplied parameters and supplied evaluation strategy
+-- measuring the time needed for that
+runCircleMCBattery :: ParallelMCStrategy -> AnnotatedGenList -> Benchmark
+runCircleMCBattery strat gens = bgroup "MC_Circle" $ do
   sliceInstance <- slices
   dotsInstance <- dots
   (name, gen) <- gens
   return $ bench (show sliceInstance ++ "_" ++ show dotsInstance ++ "_" ++ name)
-    $ nf (runCircleMC sliceInstance dotsInstance) gen
+    $ nf (runCircleMC strat sliceInstance dotsInstance) gen
+
+-- | Runs MC process sequentially with supplied parameters
+-- measuring the time needed for that
+runSequentialCircleMCBattery :: AnnotatedGenList -> Benchmark
+runSequentialCircleMCBattery = runCircleMCBattery r0
+
+-- | Runs MC process in parallel with supplied parameters
+-- measuring the time needed for that
+runParallelCircleMCBattery :: AnnotatedGenList -> Benchmark
+runParallelCircleMCBattery = runCircleMCBattery rpar
