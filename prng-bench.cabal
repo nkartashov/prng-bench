@@ -3,8 +3,12 @@
 
 name:                prng-bench
 version:             0.1.0.0
--- synopsis:            
--- description:         
+synopsis:            A collection of batteries for testing the performance of pseudo random number generators.
+description:         
+  Prng-bench is a collection of batteries for testing the performance of pseudo random number generators.
+  At present prng-bench has 2 batteries: SimpleBattery (generates some random numbers using split and next operations of RandomGen class) and
+  MC (generates random numbers for Monte-Carlo simulation). Execution times of batteries are measured using criterion library.
+
 homepage:            https://github.com/nkartashov/prng-bench
 license:             MIT
 license-file:        LICENSE
@@ -15,6 +19,10 @@ category:            System
 build-type:          Simple
 -- extra-source-files:  
 cabal-version:       >=1.10
+
+source-repository head
+  type:     git
+  location: git://github.com/nkartashov/prng-bench
 
 executable prng-bench
   main-is:             Main.hs
@@ -46,3 +54,5 @@ library
                        parallel
   hs-source-dirs:      src
   default-language:    Haskell2010
+  ghc-options:         -Wall
+                       -O2
