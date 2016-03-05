@@ -5,15 +5,14 @@ module Test.PRNGBench.RandomUtils
   ) where
 
 import System.Random (RandomGen, next, split)
-import Data.Bits ((.&.), popCount)
-import Data.List (unfoldr)
+import Data.Bits ((.&.))
 
 -- | Produces an infinite stream of random numbers given a generator
 nextStreamFromGen :: RandomGen g => g -> [Int]
 nextStreamFromGen gen = map fst $ iterate wrappedNext firstStreamElement
   where firstStreamElement = next gen
 
--- | Wrapper for 'next' permitting the use of 'unfold'
+-- | Wrapper for 'next' permitting the use of 'iterate'
 wrappedNext :: RandomGen g => (Int, g) -> (Int, g)
 wrappedNext (_, newGen) = next newGen
 
