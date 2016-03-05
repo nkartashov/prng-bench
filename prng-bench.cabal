@@ -28,8 +28,8 @@ executable prng-bench
   main-is:             Main.hs
   -- other-modules:       
   -- other-extensions:    
-  build-depends:       base >= 4.7 && < 4.8,
-                       random >= 1.0 && < 1.1,
+  build-depends:       base >= 4.7 && < 4.9,
+                       random >= 1.0 && < 1.2,
                        splitmix,
                        tf-random,
                        pcg-random,
@@ -46,7 +46,7 @@ library
                    Test.PRNGBench.GenList
   other-modules:   Test.PRNGBench.RandomUtils
   -- other-extensions:    
-  build-depends:       base >=4.7 && <4.8,
+  build-depends:       base >=4.7 && <4.9,
                        random,
                        criterion == 1.1.0.0,
                        splitmix,
